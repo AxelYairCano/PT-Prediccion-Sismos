@@ -253,7 +253,7 @@ def generar_vectores_entrenamiento(df):
 # ==========================================
 def crear_visualizaciones(df_catalogo, X_train, y_train, fechas_train):
     """Crea gráficas de análisis sísmico"""
-    print("\n[5/4] Generando visualizaciones...")
+    print("\n[5/5] Generando visualizaciones...")
     
     fig = plt.figure(figsize=(16, 12))
     
@@ -357,19 +357,24 @@ def crear_visualizaciones(df_catalogo, X_train, y_train, fechas_train):
     
     plt.tight_layout()
     plt.savefig('analisis_sismos.png', dpi=300, bbox_inches='tight')
-    print(" Gráficas guardadas en 'analisis_sismos.png'")
+    #print(" Gráficas guardadas en 'analisis_sismos.png'")
+
+    output_filename = f"analisis_sismos_{CONFIG['DIRECTORIO_RAIZ']}.png"
+    plt.savefig(output_filename, dpi=300, bbox_inches='tight')
+    print(f" Gráficas guardadas en '{output_filename}' (datos de {CONFIG['DIRECTORIO_RAIZ']})")
     plt.show()
+    print(" Visualizaciones generadas exitosamente")
 
 
 # ==========================================
-# 5. EJECUCIÓN PRINCIPAL
+# 6. EJECUCIÓN PRINCIPAL
 # ==========================================
 if __name__ == "__main__":
     print("=" * 60)
     print("----- PIPELINE DE PROCESAMIENTO SÍSMICO -----")
     print("=" * 60)
 
-    print("\n[1/4] Construyendo catálogo completo...")
+    print("\n[1/5] Construyendo catálogo completo...")
     df_catalogo = construir_catalogo_desde_carpeta(CONFIG["DIRECTORIO_RAIZ"])
 
     if df_catalogo.empty:
@@ -379,13 +384,13 @@ if __name__ == "__main__":
     print(f"\nEventos leídos (con duplicados): {len(df_catalogo)}")
     print(f"Rango de fechas: {df_catalogo['datetime'].min()} a {df_catalogo['datetime'].max()}")
 
-    print("\n[2/4] Eliminando sismos duplicados...")
+    print("\n[2/5] Eliminando sismos duplicados...")
     df_catalogo = eliminar_sismos_duplicados(df_catalogo)
 
-    print("\n[3/4] Generando dataset de entrenamiento...")
+    print("\n[3/5] Generando dataset de entrenamiento...")
     X_train, y_train, fechas_train = generar_vectores_entrenamiento(df_catalogo)
 
-    print("\n[4/4] Validando dataset...")
+    print("\n[4/5] Validando dataset...")
     if len(X_train) > 0:
         print("Dataset listo para usar")
         print(f"   X shape: {X_train.shape}")
@@ -401,43 +406,3 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 60)
 
-
-"""
-# ==========================================
-# 5. EJECUCIÓN PRINCIPAL
-# ==========================================
-if __name__ == "__main__":
-    print("=" * 60)
-    print("PIPELINE DE PROCESAMIENTO SÍSMICO - VERSIÓN CORREGIDA")
-    print("=" * 60)
-
-    print("\n[1/4] Construyendo catálogo completo...")
-    df_catalogo = construir_catalogo_desde_carpeta(CONFIG["DIRECTORIO_RAIZ"])
-
-    if df_catalogo.empty:
-        print(" No se encontraron datos válidos")
-        exit(1)
-
-    print(f"\nEventos leídos (con duplicados): {len(df_catalogo)}")
-    print(f"Rango de fechas: {df_catalogo['datetime'].min()} a {df_catalogo['datetime'].max()}")
-
-    print("\n[2/4] Eliminando sismos duplicados...")
-    df_catalogo = eliminar_sismos_duplicados(df_catalogo)
-
-    print("\n[3/4] Generando dataset de entrenamiento...")
-    X_train, y_train, fechas_train = generar_vectores_entrenamiento(df_catalogo)
-
-    print("\n[4/4] Validando dataset...")
-    if len(X_train) > 0:
-        print(" Dataset listo para usar")
-        print(f"   X shape: {X_train.shape}")
-        print(f"   y shape: {y_train.shape}")
-        print(f"   Rango de magnitudes: [{y_train.min():.2f}, {y_train.max():.2f}]")
-        print(f"   Promedio y: {y_train.mean():.2f}")
-        print(f"   Desviación estándar: {y_train.std():.2f}")
-    else:
-        print(" No se generaron vectores de entrenamiento")
-
-    print("\n" + "=" * 60)
-
-"""
