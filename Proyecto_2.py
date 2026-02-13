@@ -45,7 +45,17 @@ def extraer_datos_de_archivo(ruta_archivo):
             contenido
         )
         
-        # MAGNITUDES: Extraer Mb Y Mc
+        # ==========================================
+        # MAGNITUDES: Mb y Mc
+        # ==========================================
+
+        # -------------------------------------------------
+        # Mb: Magnitud de ondas de cuerpo (body-wave magnitude)
+        #     Basada en ondas P.
+        # Mc: Magnitud de coda
+        #     Basada en la energía de la coda sísmica.
+        # Se usa Mb cuando está disponible; en caso contrario, Mc.
+        # -------------------------------------------------
         mb_match = re.search(r"Mb=([\d.]+)", contenido)
         mc_match = re.search(r"Mc=([\d.]+)", contenido)
         
@@ -317,7 +327,7 @@ def crear_visualizaciones(df_catalogo, X_train, y_train, fechas_train):
     ax6.set_ylabel('Magnitud Mc')
     ax6.set_title('Comparación Mb vs Mc')
     ax6.grid(True, alpha=0.3)
-    
+
     # 7. VARIABLE TARGET (y_train)
     if len(y_train) > 0:
         ax7 = plt.subplot(3, 3, 7)
