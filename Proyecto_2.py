@@ -17,7 +17,8 @@ CONFIG = {
     "HORIZONTE_PREDICCION": 5,
     "VENTANA_MAX_MAG": 7,
     "VENTANA_DUPLICADOS": 60,
-    "DELTA_MAG": 0.1
+    "DELTA_MAG": 0.1,
+    "TIPO_MAGNITUD": "Mc"
 }
 
 # ==========================================
@@ -82,7 +83,24 @@ def extraer_datos_de_archivo(ruta_archivo):
         fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M:%S")
 
         # Usar Mb si existe, sino Mc
-        magnitud = float(mb_match.group(1)) if mb_match else float(mc_match.group(1))
+        #magnitud = float(mb_match.group(1)) if mb_match else float(mc_match.group(1))
+        
+        # Selección controlada por CONFIG
+        tipo_mag = CONFIG["TIPO_MAGNITUD"]
+
+        if tipo_mag == "Mb":
+            if not mb_match:
+                return None
+            magnitud = float(mb_match.group(1))
+
+        elif tipo_mag == "Mc":
+            if not mc_match:
+                return None
+            magnitud = float(mc_match.group(1))
+
+        else:
+            raise ValueError("TIPO_MAGNITUD debe ser 'Mb' o 'Mc'")
+
         
         # Extraer coordenadas (pueden estar en múltiples líneas)
         lat = float(lat_match.group(1)) if lat_match else 0.0
@@ -369,7 +387,9 @@ def crear_visualizaciones(df_catalogo, X_train, y_train, fechas_train):
     plt.savefig('analisis_sismos.png', dpi=300, bbox_inches='tight')
     #print(" Gráficas guardadas en 'analisis_sismos.png'")
 
-    output_filename = f"analisis_sismos_{CONFIG['DIRECTORIO_RAIZ']}.png"
+    #output_filename = f"analisis_sismos_{CONFIG['DIRECTORIO_RAIZ']}.png"
+    output_filename = f"analisis_sismos_{CONFIG['DIRECTORIO_RAIZ']}_{CONFIG['TIPO_MAGNITUD']}.png"
+
     plt.savefig(output_filename, dpi=300, bbox_inches='tight')
     print(f" Gráficas guardadas en '{output_filename}' (datos de {CONFIG['DIRECTORIO_RAIZ']})")
     plt.show()
@@ -387,6 +407,8 @@ if __name__ == "__main__":
     print("\n[1/5] Construyendo catálogo completo...")
     df_catalogo = construir_catalogo_desde_carpeta(CONFIG["DIRECTORIO_RAIZ"])
 
+    print(f"Escala seleccionada: {CONFIG['TIPO_MAGNITUD']}")
+
     if df_catalogo.empty:
         print(" No se encontraron datos válidos")
         exit(1)
@@ -396,6 +418,9 @@ if __name__ == "__main__":
 
     print("\n[2/5] Eliminando sismos duplicados...")
     df_catalogo = eliminar_sismos_duplicados(df_catalogo)
+
+    b_global = calcular_b_value(df_catalogo["magnitude"])
+    print(f"\nb-value global ({CONFIG['TIPO_MAGNITUD']}): {b_global:.4f}")
 
     print("\n[3/5] Generando dataset de entrenamiento...")
     X_train, y_train, fechas_train = generar_vectores_entrenamiento(df_catalogo)
