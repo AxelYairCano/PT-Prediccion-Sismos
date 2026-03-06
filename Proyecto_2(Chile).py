@@ -86,7 +86,7 @@ def extraer_datos_de_archivo(ruta_archivo):
         #magnitud = float(mb_match.group(1)) if mb_match else float(mc_match.group(1))
         
         # Selección controlada por CONFIG
-        tipo_mag = CONFIG["TIPO_MAGNITUD"]
+        tipo_mag = CONFIG["TIPO_MAGNITUD"] #MC
 
         if tipo_mag == "Mb":
             if not mb_match:
