@@ -1,4 +1,4 @@
-# 🌍 Predicción de Sismos mediante Redes Neuronales
+# 🌍 Estimación de Sismos mediante Redes Neuronales
 
 Este proyecto utiliza técnicas de **Machine Learning** y análisis de datos históricos para identificar patrones y realizar predicciones sobre la actividad sísmica en diferentes regiones del mundo, con un enfoque particular en zonas de alta sismicidad como **Tokio** y **Chile**.
 
